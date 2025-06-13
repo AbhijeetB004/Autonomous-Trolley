@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Package, ShoppingBag, Clock, TrendingUp } from 'lucide-react'
+import { Package, ShoppingBag, Clock, TrendingUp, Wifi } from 'lucide-react'
 import { useAuthStore } from '../stores/authStore'
 import { ordersApi, productsApi } from '../services/api'
 import { Order, Product } from '../types'
 import { formatCurrency, formatRelativeTime, getStatusColor } from '../utils/format'
+import { useCartStore } from '../stores/cartStore'
 
 const Dashboard: React.FC = () => {
   const { user } = useAuthStore()
+  const { trolleyId: connectedTrolleyId, clearTrolleyId } = useCartStore()
   const [recentOrders, setRecentOrders] = useState<Order[]>([])
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([])
   const [stats, setStats] = useState({
@@ -58,7 +60,7 @@ const Dashboard: React.FC = () => {
   return (
     <div className="space-y-6 fade-in">
       {/* Welcome Header */}
-      <div className="bg-gradient-to-r from-primary-600 to-primary-700 rounded-xl p-6 text-white">
+      <div className="bg-gradient-to-r from-primary-600 to-primary-700 rounded-xl p-6 text-white mt-4">
         <h1 className="text-2xl font-bold">
           Welcome back, {user?.firstName}!
         </h1>
@@ -67,44 +69,70 @@ const Dashboard: React.FC = () => {
         </p>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="card">
-          <div className="flex items-center">
-            <div className="p-3 bg-primary-100 rounded-lg">
-              <ShoppingBag className="w-6 h-6 text-primary-600" />
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Total Orders</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.totalOrders}</p>
-            </div>
+      {/* Trolley Connection Status */}
+      <div className="card p-4 sm:p-6 flex items-center justify-between">
+        {connectedTrolleyId ? (
+          <div className="flex items-center space-x-2 text-primary-600">
+            <Wifi className="w-5 h-5" />
+            <p className="font-semibold">Connected to Trolley: <span className="font-bold">{connectedTrolleyId}</span></p>
           </div>
-        </div>
-
-        <div className="card">
-          <div className="flex items-center">
-            <div className="p-3 bg-warning-100 rounded-lg">
-              <Clock className="w-6 h-6 text-warning-600" />
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Pending Orders</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.pendingOrders}</p>
-            </div>
+        ) : (
+          <div className="flex items-center space-x-2 text-gray-600">
+            <Wifi className="w-5 h-5" />
+            <p>Not connected to any trolley.</p>
           </div>
-        </div>
-
-        <div className="card">
-          <div className="flex items-center">
-            <div className="p-3 bg-success-100 rounded-lg">
-              <TrendingUp className="w-6 h-6 text-success-600" />
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Completed Orders</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.completedOrders}</p>
-            </div>
-          </div>
-        </div>
+        )}
+        {connectedTrolleyId ? (
+          <button onClick={clearTrolleyId} className="btn-secondary text-error-600 hover:text-error-700">
+            Disconnect
+          </button>
+        ) : (
+          <Link to="/connect-trolley" className="btn-primary">
+            Connect to Trolley
+          </Link>
+        )}
       </div>
+
+      {/* Stats Cards - Only for admin */}
+      {user?.role === 'admin' && (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="card">
+            <div className="flex items-center">
+              <div className="p-3 bg-primary-100 rounded-lg">
+                <ShoppingBag className="w-6 h-6 text-primary-600" />
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600">Total Orders</p>
+                <p className="text-2xl font-bold text-gray-900">{stats.totalOrders}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="card">
+            <div className="flex items-center">
+              <div className="p-3 bg-warning-100 rounded-lg">
+                <Clock className="w-6 h-6 text-warning-600" />
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600">Pending Orders</p>
+                <p className="text-2xl font-bold text-gray-900">{stats.pendingOrders}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="card">
+            <div className="flex items-center">
+              <div className="p-3 bg-success-100 rounded-lg">
+                <TrendingUp className="w-6 h-6 text-success-600" />
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600">Completed Orders</p>
+                <p className="text-2xl font-bold text-gray-900">{stats.completedOrders}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Orders */}

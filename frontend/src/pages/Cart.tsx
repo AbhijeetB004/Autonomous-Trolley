@@ -7,7 +7,7 @@ import { formatCurrency } from '../utils/format'
 import toast from 'react-hot-toast'
 
 const Cart: React.FC = () => {
-  const { items, updateQuantity, removeItem, clearCart, getTotalPrice } = useCartStore()
+  const { items, updateQuantity, removeItem, clearCart, getTotalPrice, trolleyId } = useCartStore()
   const [isCheckingOut, setIsCheckingOut] = useState(false)
   const navigate = useNavigate()
 
@@ -28,9 +28,9 @@ const Cart: React.FC = () => {
     setIsCheckingOut(true)
 
     try {
-      const orderData = {
+      const orderData: any = {
         orderId: `ORDER_${Date.now()}`,
-        orderType: 'pickup',
+        orderType: trolleyId ? 'trolley-assisted' : 'pickup',
         items: items.map(item => ({
           productId: item.product._id,
           name: item.product.name,
@@ -51,13 +51,17 @@ const Cart: React.FC = () => {
         })),
         pricing: {
           subtotal: getTotalPrice(),
-          tax: getTotalPrice() * 0.08, // 8% tax
+          tax: getTotalPrice() * 0.08,
           discount: 0,
           total: getTotalPrice() * 1.08,
         },
         timeline: {
           orderedAt: new Date().toISOString(),
         },
+      }
+
+      if (trolleyId) {
+        orderData.trolleyId = trolleyId
       }
 
       const response = await ordersApi.create(orderData)
@@ -95,15 +99,15 @@ const Cart: React.FC = () => {
   }
 
   const subtotal = getTotalPrice()
-  const tax = subtotal * 0.08 // 8% tax
+  const tax = subtotal * 0.08
   const total = subtotal + tax
 
   return (
-    <div className="space-y-6 fade-in">
+    <div className="space-y-6 fade-in mt-8">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between mt-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Shopping Cart</h1>
+          <h1 className="text-2xl font-bold text-gray-900 mt-4">Shopping Cart</h1>
           <p className="text-gray-600 mt-1">{items.length} item{items.length !== 1 ? 's' : ''} in your cart</p>
         </div>
         <button
@@ -120,7 +124,7 @@ const Cart: React.FC = () => {
         <div className="lg:col-span-2 space-y-4">
           {items.map((item) => (
             <div key={item.product._id} className="card">
-              <div className="flex items-center space-x-4">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-4 p-4">
                 {/* Product Image */}
                 <div className="w-20 h-20 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
                   {item.product.images.length > 0 ? (
@@ -135,11 +139,11 @@ const Cart: React.FC = () => {
                 </div>
 
                 {/* Product Info */}
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-medium text-gray-900 truncate">
+                <div className="flex-1 min-w-0 w-full">
+                  <h3 className="font-medium text-gray-900 line-clamp-2">
                     {item.product.name}
                   </h3>
-                  <p className="text-sm text-gray-600 truncate">
+                  <p className="text-sm text-gray-600 line-clamp-2">
                     {item.product.description}
                   </p>
                   <div className="flex items-center space-x-2 mt-1">
@@ -159,7 +163,7 @@ const Cart: React.FC = () => {
                 </div>
 
                 {/* Quantity Controls */}
-                <div className="flex items-center space-x-3">
+                <div className="flex items-center space-x-3 w-full sm:w-auto justify-end sm:justify-start">
                   <button
                     onClick={() => handleQuantityChange(item.product._id, item.quantity - 1)}
                     className="p-1 hover:bg-gray-100 rounded-lg transition-colors"
@@ -176,7 +180,7 @@ const Cart: React.FC = () => {
                 </div>
 
                 {/* Total Price */}
-                <div className="text-right">
+                <div className="text-left sm:text-right w-full sm:w-auto">
                   <p className="font-semibold text-gray-900">
                     {formatCurrency(
                       (item.product.price.onSale && item.product.price.discountPrice

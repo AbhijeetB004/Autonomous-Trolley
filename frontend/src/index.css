@@ -3,10 +3,17 @@
 @tailwind utilities;
 
 @layer base {
+  html,
+  body {
+    width: 100%;
+    box-sizing: border-box;
+    min-width: 0; /* Explicitly ensure no minimum width */
+  }
   
   body {
     @apply bg-gray-50 text-gray-900 font-sans;
     font-feature-settings: "rlig" 1, "calt" 1;
+    overflow-x: hidden; /* Aggressive overflow handling for persistent mobile issues */
   }
 }
 

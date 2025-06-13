@@ -14,6 +14,13 @@ const Products: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState('')
   const [isLoading, setIsLoading] = useState(true)
   const { addItem } = useCartStore()
+  const [maxPrice, setMaxPrice] = useState(0)
+  const [showMoreFilters, setShowMoreFilters] = useState(false)
+
+  // Determine the effective max value for the slider
+  const priceValues = products.map(p => p.price.amount)
+  const currentMaxProductPrice = priceValues.length ? Math.max(...priceValues) : 0
+  const sliderMaxRange = Math.max(currentMaxProductPrice, 10000) // Ensure slider goes up to 10,000 or actual max price if higher
 
   useEffect(() => {
     const fetchData = async () => {
@@ -26,6 +33,7 @@ const Products: React.FC = () => {
         setProducts(productsResponse.data)
         setCategories(categoriesResponse.data)
         setFilteredProducts(productsResponse.data)
+
       } catch (error) {
         console.error('Error fetching data:', error)
         toast.error('Failed to load products')
@@ -54,11 +62,20 @@ const Products: React.FC = () => {
       filtered = filtered.filter(product => product.category === selectedCategory)
     }
 
+    // Filter by max price (min is always 0)
+    if (maxPrice > 0) {
+      filtered = filtered.filter(product => product.price.amount <= maxPrice)
+    } else if (maxPrice === 0) {
+      // If maxPrice is 0, show all products. No filter applied.
+      // The products will naturally be limited by sliderMaxRange if it's less than actual max product price
+      // (this branch is effectively a no-op as 'filtered' already contains all products before this point)
+    }
+
     // Only show active products
     filtered = filtered.filter(product => product.status === 'active')
 
     setFilteredProducts(filtered)
-  }, [products, searchTerm, selectedCategory])
+  }, [products, searchTerm, selectedCategory, maxPrice])
 
   const handleAddToCart = (product: Product) => {
     if (!product.inventory.inStock) {
@@ -79,7 +96,7 @@ const Products: React.FC = () => {
   return (
     <div className="space-y-6 fade-in">
       {/* Header */}
-      <div>
+      <div className="mt-4">
         <h1 className="text-2xl font-bold text-gray-900">Products</h1>
         <p className="text-gray-600 mt-1">Discover our wide range of products</p>
       </div>
@@ -114,17 +131,37 @@ const Products: React.FC = () => {
               ))}
             </select>
           </div>
+
         </div>
 
         <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-200">
           <p className="text-sm text-gray-600">
             Showing {filteredProducts.length} of {products.length} products
           </p>
-          <button className="btn-secondary text-sm">
+          <button className="btn-secondary text-sm" onClick={() => setShowMoreFilters(v => !v)}>
             <Filter className="w-4 h-4 mr-2" />
             More Filters
           </button>
         </div>
+
+        {/* More Filters Panel */}
+        {showMoreFilters && (
+          <div className="mt-4 flex flex-col gap-4">
+            <label className="text-sm font-medium text-gray-700">Price Range</label>
+            <div className="flex items-center gap-4">
+              <span className="text-gray-600 text-sm">Min: {formatCurrency(0)}</span>
+              <input
+                type="range"
+                min={0} // Always starts at 0
+                max={sliderMaxRange} // Dynamic max, up to 10,000 or actual max
+                value={maxPrice} // Use maxPrice directly
+                onChange={e => setMaxPrice(parseFloat(e.target.value))}
+                className="w-64"
+              />
+              <span className="text-gray-600 text-sm">Max: {formatCurrency(maxPrice)}</span>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Products Grid */}

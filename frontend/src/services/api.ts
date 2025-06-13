@@ -38,6 +38,8 @@ export const authApi = {
   register: (data: { firstName: string; lastName: string; email: string; password: string }) =>
     api.post('/auth/register', data),
   getProfile: () => api.get('/auth/profile'),
+  updateProfile: (data: { firstName: string; lastName: string; preferences: { favoriteStore?: string; dietaryRestrictions?: string[] } }) =>
+    api.put('/auth/profile', data),
 }
 
 // Products API
@@ -82,6 +84,9 @@ export const trolleysApi = {
   create: (data: any) => api.post('/trolleys', data),
   update: (id: string, data: any) => api.put(`/trolleys/${id}`, data),
   updateStatus: (id: string, data: any) => api.put(`/trolleys/${id}/status`, data),
+  connect: (trolleyId: string) => api.post('/trolleys/connect', { trolleyId }),
+  disconnect: (trolleyId: string) => api.post('/trolleys/disconnect', { trolleyId }),
+  checkAvailability: (trolleyId: string) => api.get(`/trolleys/availability/${trolleyId}`),
 }
 
 export default api

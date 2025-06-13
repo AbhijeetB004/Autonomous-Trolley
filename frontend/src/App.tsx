@@ -10,12 +10,15 @@ import Orders from './pages/Orders'
 import OrderDetails from './pages/OrderDetails'
 import Cart from './pages/Cart'
 import Profile from './pages/Profile'
+import EditProfile from './pages/EditProfile'
 import AdminDashboard from './pages/admin/AdminDashboard'
 import AdminProducts from './pages/admin/AdminProducts'
 import AdminOrders from './pages/admin/AdminOrders'
 import AdminTrolleys from './pages/admin/AdminTrolleys'
 import AdminCategories from './pages/admin/AdminCategories'
 import ProtectedRoute from './components/ProtectedRoute'
+import AdminLogin from './pages/auth/AdminLogin'
+import ConnectTrolley from './pages/ConnectTrolley'
 
 function App() {
   const { user, isLoading } = useAuthStore()
@@ -33,6 +36,7 @@ function App() {
       {/* Public routes */}
       <Route path="/login" element={!user ? <Login /> : <Navigate to="/" replace />} />
       <Route path="/register" element={!user ? <Register /> : <Navigate to="/" replace />} />
+      <Route path="/admin-login" element={!user ? <AdminLogin /> : <Navigate to="/" replace />} />
       
       {/* Protected routes */}
       <Route path="/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
@@ -43,6 +47,8 @@ function App() {
         <Route path="orders/:id" element={<OrderDetails />} />
         <Route path="cart" element={<Cart />} />
         <Route path="profile" element={<Profile />} />
+        <Route path="profile/edit" element={<EditProfile />} />
+        <Route path="connect-trolley" element={<ConnectTrolley />} />
         
         {/* Admin routes */}
         <Route path="admin" element={

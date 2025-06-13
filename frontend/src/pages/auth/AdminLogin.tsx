@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { ShoppingCart, Eye, EyeOff } from 'lucide-react'
 import { useAuthStore } from '../../stores/authStore'
 
-const Login: React.FC = () => {
+const AdminLogin: React.FC = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -32,9 +32,9 @@ const Login: React.FC = () => {
               <ShoppingCart className="w-8 h-8 text-white" />
             </div>
           </div>
-          <h2 className="mt-6 text-3xl font-bold text-gray-900">Welcome back</h2>
+          <h2 className="mt-6 text-3xl font-bold text-gray-900">Admin Login</h2>
           <p className="mt-2 text-sm text-gray-600">
-            Sign in to your Smart Trolley account
+            Sign in to your Smart Trolley <span className="font-semibold text-primary-600">Admin</span> account
           </p>
         </div>
 
@@ -42,7 +42,7 @@ const Login: React.FC = () => {
           <div className="space-y-4">
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email address
+                Admin Email address
               </label>
               <input
                 id="email"
@@ -51,7 +51,7 @@ const Login: React.FC = () => {
                 autoComplete="email"
                 required
                 className="input mt-1"
-                placeholder="Enter your email"
+                placeholder="Enter admin email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -69,7 +69,7 @@ const Login: React.FC = () => {
                   autoComplete="current-password"
                   required
                   className="input pr-10"
-                  placeholder="Enter your password"
+                  placeholder="Enter password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
@@ -100,29 +100,18 @@ const Login: React.FC = () => {
                   Signing in...
                 </div>
               ) : (
-                'Sign in'
+                'Sign in as Admin'
               )}
             </button>
           </div>
 
-          <div className="text-center">
-            <p className="text-sm text-gray-600">
-              Don't have an account?{' '}
-              <Link
-                to="/register"
-                className="font-medium text-primary-600 hover:text-primary-500 transition-colors"
-              >
-                Sign up
-              </Link>
-            </p>
-            <p className="text-sm text-gray-600 mt-2">
-              <Link
-                to="/admin-login"
-                className="font-medium text-primary-600 hover:text-primary-500 transition-colors"
-              >
-                Login as Admin
-              </Link>
-            </p>
+          <div className="text-center mt-4">
+            <Link
+              to="/login"
+              className="font-medium text-primary-600 hover:text-primary-500 transition-colors"
+            >
+              Back to Customer Login
+            </Link>
           </div>
         </form>
       </div>
@@ -130,4 +119,4 @@ const Login: React.FC = () => {
   )
 }
 
-export default Login
+export default AdminLogin 

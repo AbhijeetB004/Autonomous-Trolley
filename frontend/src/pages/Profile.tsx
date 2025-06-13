@@ -5,6 +5,7 @@ import { authApi, ordersApi } from '../services/api'
 import { Order } from '../types'
 import { formatCurrency, formatDate } from '../utils/format'
 import toast from 'react-hot-toast'
+import { Link } from 'react-router-dom'
 
 const Profile: React.FC = () => {
   const { user } = useAuthStore()
@@ -45,17 +46,17 @@ const Profile: React.FC = () => {
   const completedOrders = recentOrders.filter(order => order.status === 'completed').length
 
   return (
-    <div className="space-y-6 fade-in">
+    <div className="space-y-6 fade-in pt-4">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Profile</h1>
           <p className="text-gray-600 mt-1">Manage your account and preferences</p>
         </div>
-        <button className="btn-secondary">
+        <Link to="/profile/edit" className="btn-secondary">
           <Settings className="w-4 h-4 mr-2" />
           Edit Profile
-        </button>
+        </Link>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -156,15 +157,22 @@ const Profile: React.FC = () => {
                 {recentOrders.map((order) => (
                   <div
                     key={order._id}
-                    className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                    className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors space-y-2 sm:space-y-0"
                   >
                     <div>
                       <p className="font-medium text-gray-900">#{order.orderId}</p>
-                      <p className="text-sm text-gray-500">
-                        {order.items.length} items • {formatDate(order.timeline.orderedAt || '')}
-                      </p>
+                      <div className="flex flex-wrap items-center space-x-2 text-sm text-gray-500 mt-1">
+                        <div className="flex items-center">
+                          {order.items.length} item{order.items.length !== 1 ? 's' : ''}
+                        </div>
+                        <span>•</span>
+                        <div className="flex items-center">
+                          <Calendar className="w-4 h-4 mr-1" />
+                          {formatDate(order.timeline.orderedAt || '')}
+                        </div>
+                      </div>
                     </div>
-                    <div className="text-right">
+                    <div className="text-left sm:text-right w-full sm:w-auto">
                       <p className="font-medium text-gray-900">
                         {formatCurrency(order.pricing.total)}
                       </p>

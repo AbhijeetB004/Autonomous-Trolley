@@ -5,10 +5,13 @@ import toast from 'react-hot-toast'
 
 interface CartState {
   items: CartItem[]
+  trolleyId: string | null
   addItem: (product: Product, quantity?: number) => void
   removeItem: (productId: string) => void
   updateQuantity: (productId: string, quantity: number) => void
   clearCart: () => void
+  setTrolleyId: (id: string) => void
+  clearTrolleyId: () => void
   getTotalItems: () => number
   getTotalPrice: () => number
 }
@@ -17,6 +20,7 @@ export const useCartStore = create<CartState>()(
   persist(
     (set, get) => ({
       items: [],
+      trolleyId: null,
 
       addItem: (product: Product, quantity = 1) => {
         const { items } = get()
@@ -66,6 +70,14 @@ export const useCartStore = create<CartState>()(
       clearCart: () => {
         set({ items: [] })
         toast.success('Cart cleared')
+      },
+
+      setTrolleyId: (id: string) => {
+        set({ trolleyId: id })
+      },
+
+      clearTrolleyId: () => {
+        set({ trolleyId: null })
       },
 
       getTotalItems: () => {

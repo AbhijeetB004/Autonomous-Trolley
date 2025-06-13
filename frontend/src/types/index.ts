@@ -4,6 +4,17 @@ export interface User {
   firstName: string
   lastName: string
   role: 'admin' | 'customer'
+  preferences?: {
+    favoriteStore?: string
+    dietaryRestrictions?: string[]
+    preferredCategories?: string[]
+    language?: string
+    notifications?: {
+      orderUpdates: boolean
+      promotions: boolean
+      newProducts: boolean
+    }
+  }
 }
 
 export interface Product {
