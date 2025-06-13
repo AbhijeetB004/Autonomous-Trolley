@@ -37,19 +37,25 @@ exports.updateOrderStatus = async (req, res) => {
 
     // Publish MQTT command if order is assigned to trolley and status is in_progress
     if (status === 'in_progress' && order.trolleyId) {
-      publish(`trolley/${order.trolleyId}/commands/order`, {
-        messageType: 'ORDER_COMMAND',
-        orderId: order.orderId,
-        trolleyId: order.trolleyId,
-        command: 'START_ORDER',
-        payload: {
-          items: order.items,
-          route: order.trolleyAssignment?.route || [],
-          estimatedTime: order.trolleyAssignment?.estimatedTime || null,
-          priority: order.trolleyAssignment?.priority || 'normal',
-        },
-        timestamp: new Date().toISOString(),
-      });
+      try {
+        publish(`trolley/${order.trolleyId}/commands/order`, {
+          messageType: 'ORDER_COMMAND',
+          orderId: order.orderId,
+          trolleyId: order.trolleyId,
+          command: 'START_ORDER',
+          payload: {
+            items: order.items,
+            route: order.trolleyAssignment?.route || [],
+            estimatedTime: order.trolleyAssignment?.estimatedTime || null,
+            priority: order.trolleyAssignment?.priority || 'normal',
+          },
+          timestamp: new Date().toISOString(),
+        });
+        console.log('Order command published to trolley', order.trolleyId);
+      } catch (error) {
+        console.error('Error publishing order command to trolley:', error);
+        // Continue execution since MQTT failure shouldn't block order status update
+      }
     }
 
     res.json(order);

@@ -9,7 +9,7 @@ const productSchema = new mongoose.Schema({
   brand: String,
   price: {
     amount: Number,
-    currency: String,
+    currency: { type: String, default: 'INR' },
     discountPrice: Number,
     onSale: Boolean,
   },

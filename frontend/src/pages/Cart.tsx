@@ -25,6 +25,13 @@ const Cart: React.FC = () => {
       return
     }
 
+    // If not connected to a trolley, redirect to connect trolley page
+    if (!trolleyId) {
+      toast.error('Please connect to a trolley to proceed with checkout.')
+      navigate('/connect-trolley')
+      return
+    }
+
     setIsCheckingOut(true)
 
     try {

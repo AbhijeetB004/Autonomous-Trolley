@@ -69,6 +69,25 @@ const CreateProduct: React.FC = () => {
           [name.split('.')[1]]: type === 'checkbox' ? checked : parseInt(value) || 0
         }
       }))
+    } else if (name.startsWith('shelfLocation.coordinates.')) {
+      setProduct(prev => ({
+        ...prev!,
+        shelfLocation: {
+          ...prev!.shelfLocation!,
+          coordinates: {
+            ...prev!.shelfLocation!.coordinates!,
+            [name.split('.')[2]]: parseFloat(value) || 0
+          }
+        }
+      }))
+    } else if (name.startsWith('shelfLocation.')) {
+      setProduct(prev => ({
+        ...prev!,
+        shelfLocation: {
+          ...prev!.shelfLocation!,
+          [name.split('.')[1]]: value
+        }
+      }))
     } else {
       setProduct(prev => ({
         ...prev!,
@@ -178,6 +197,43 @@ const CreateProduct: React.FC = () => {
           <div>
             <label htmlFor="inventory.inStock" className="label block">In Stock</label>
             <input type="checkbox" id="inventory.inStock" name="inventory.inStock" checked={product.inventory?.inStock || false} onChange={handleChange} className="form-checkbox h-5 w-5 text-primary-600" />
+          </div>
+        </div>
+
+        <h2 className="text-xl font-semibold text-gray-900 pt-4 border-t border-gray-200">Location</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label htmlFor="shelfLocation.storeId" className="label">Store ID</label>
+            <input type="text" id="shelfLocation.storeId" name="shelfLocation.storeId" value={product.shelfLocation?.storeId || ''} onChange={handleChange} className="input" required />
+          </div>
+          <div>
+            <label htmlFor="shelfLocation.aisle" className="label">Aisle</label>
+            <input type="text" id="shelfLocation.aisle" name="shelfLocation.aisle" value={product.shelfLocation?.aisle || ''} onChange={handleChange} className="input" required />
+          </div>
+          <div>
+            <label htmlFor="shelfLocation.section" className="label">Section</label>
+            <input type="text" id="shelfLocation.section" name="shelfLocation.section" value={product.shelfLocation?.section || ''} onChange={handleChange} className="input" required />
+          </div>
+          <div>
+            <label htmlFor="shelfLocation.shelf" className="label">Shelf</label>
+            <input type="text" id="shelfLocation.shelf" name="shelfLocation.shelf" value={product.shelfLocation?.shelf || ''} onChange={handleChange} className="input" required />
+          </div>
+          <div className="md:col-span-2">
+            <h3 className="text-md font-medium text-gray-800 mb-2">Coordinates</h3>
+            <div className="grid grid-cols-3 gap-4">
+              <div>
+                <label htmlFor="shelfLocation.coordinates.x" className="label">X</label>
+                <input type="number" id="shelfLocation.coordinates.x" name="shelfLocation.coordinates.x" value={product.shelfLocation?.coordinates?.x || 0} onChange={handleChange} className="input" step="0.1" />
+              </div>
+              <div>
+                <label htmlFor="shelfLocation.coordinates.y" className="label">Y</label>
+                <input type="number" id="shelfLocation.coordinates.y" name="shelfLocation.coordinates.y" value={product.shelfLocation?.coordinates?.y || 0} onChange={handleChange} className="input" step="0.1" />
+              </div>
+              <div>
+                <label htmlFor="shelfLocation.coordinates.z" className="label">Z</label>
+                <input type="number" id="shelfLocation.coordinates.z" name="shelfLocation.coordinates.z" value={product.shelfLocation?.coordinates?.z || 0} onChange={handleChange} className="input" step="0.1" />
+              </div>
+            </div>
           </div>
         </div>
 
