@@ -16,15 +16,22 @@ const userSchema = new mongoose.Schema({
     accountStatus: { type: String, enum: ['active', 'suspended', 'deleted'], default: 'active' },
   },
   preferences: {
-    favoriteStore: String,
-    dietaryRestrictions: [String],
-    preferredCategories: [String],
-    language: String,
-    notifications: {
-      orderUpdates: Boolean,
-      promotions: Boolean,
-      newProducts: Boolean,
-    },
+    type: new mongoose.Schema({
+      favoriteStore: String,
+      dietaryRestrictions: [String],
+      preferredCategories: [String],
+      language: String,
+      notifications: {
+        type: new mongoose.Schema({
+          orderUpdates: { type: Boolean, default: false },
+          promotions: { type: Boolean, default: false },
+          newProducts: { type: Boolean, default: false },
+        }),
+        default: {},
+        required: false,
+      },
+    }, { _id: false }),
+    default: {},
   },
   orderHistory: {
     totalOrders: Number,

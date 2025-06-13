@@ -39,6 +39,7 @@ const trolleySchema = new mongoose.Schema({
       motorsStatus: String,
       lastHealthCheck: Date,
     },
+    availableForConnection: { type: Boolean, default: true },
   },
   currentOrder: {
     orderId: String,

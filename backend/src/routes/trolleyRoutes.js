@@ -6,7 +6,13 @@ const { authenticate, requireAdmin } = require('../middlewares/authMiddleware');
 // Admin: Get all trolleys
 router.get('/', authenticate, requireAdmin, trolleyController.getTrolleys);
 // Admin: Get trolley by id
-router.get('/:id', authenticate, requireAdmin, trolleyController.getTrolleyById);
+router.get('/:id', authenticate, trolleyController.getTrolleyById);
+// User: Connect to a trolley
+router.post('/connect', authenticate, trolleyController.connectTrolley);
+// User: Disconnect from a trolley
+router.post('/disconnect', authenticate, trolleyController.disconnectTrolley);
+// User: Check trolley availability
+router.get('/availability/:trolleyId', authenticate, trolleyController.checkTrolleyAvailability);
 // Admin: Update trolley status
 router.put('/:id/status', authenticate, requireAdmin, trolleyController.updateTrolleyStatus);
 // Admin: Update trolley (mock location/battery/task)

@@ -67,4 +67,47 @@ exports.getProfile = async (req, res) => {
   } catch (err) {
     return res.status(500).json({ message: 'Server error', error: err.message });
   }
+};
+
+exports.updateProfile = async (req, res) => {
+  try {
+    const { firstName, lastName, preferences } = req.body;
+    const user = await User.findOne({ userId: req.user.userId });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+
+    // Ensure user.preferences is initialized as an object if it's null or undefined
+    if (!user.preferences) {
+      user.preferences = {};
+    }
+
+    // Update profile fields
+    if (firstName) user.profile.firstName = firstName;
+    if (lastName) user.profile.lastName = lastName;
+
+    // Update preferences if provided
+    if (preferences) {
+      user.preferences = { ...user.preferences, ...preferences };
+    }
+
+    await user.save();
+
+    return res.json({ message: 'Profile updated successfully!',
+      user: {
+        userId: user.userId,
+        email: user.profile.email,
+        firstName: user.profile.firstName,
+        lastName: user.profile.lastName,
+        role: user.role,
+        preferences: user.preferences,
+        orderHistory: user.orderHistory,
+        loyalty: user.loyalty,
+      },
+    });
+  } catch (err) {
+    console.error('Error updating profile:', err);
+    return res.status(500).json({ message: 'Server error', error: err.message });
+  }
 }; 
