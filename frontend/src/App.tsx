@@ -19,6 +19,10 @@ import AdminCategories from './pages/admin/AdminCategories'
 import ProtectedRoute from './components/ProtectedRoute'
 import AdminLogin from './pages/auth/AdminLogin'
 import ConnectTrolley from './pages/ConnectTrolley'
+import EditProduct from './pages/admin/EditProduct'
+import CreateProduct from './pages/admin/CreateProduct'
+import EditTrolley from './pages/admin/EditTrolley'
+import CreateTrolley from './pages/admin/CreateTrolley'
 
 function App() {
   const { user, isLoading } = useAuthStore()
@@ -61,6 +65,16 @@ function App() {
             <AdminProducts />
           </ProtectedRoute>
         } />
+        <Route path="admin/products/:id/edit" element={
+          <ProtectedRoute requireAdmin>
+            <EditProduct />
+          </ProtectedRoute>
+        } />
+        <Route path="admin/products/new" element={
+          <ProtectedRoute requireAdmin>
+            <CreateProduct />
+          </ProtectedRoute>
+        } />
         <Route path="admin/orders" element={
           <ProtectedRoute requireAdmin>
             <AdminOrders />
@@ -69,6 +83,16 @@ function App() {
         <Route path="admin/trolleys" element={
           <ProtectedRoute requireAdmin>
             <AdminTrolleys />
+          </ProtectedRoute>
+        } />
+        <Route path="admin/trolleys/:id/edit" element={
+          <ProtectedRoute requireAdmin>
+            <EditTrolley />
+          </ProtectedRoute>
+        } />
+        <Route path="admin/trolleys/new" element={
+          <ProtectedRoute requireAdmin>
+            <CreateTrolley />
           </ProtectedRoute>
         } />
         <Route path="admin/categories" element={

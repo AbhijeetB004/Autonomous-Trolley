@@ -4,6 +4,7 @@ import { productsApi } from '../../services/api'
 import { Product } from '../../types'
 import { formatCurrency, getStatusColor } from '../../utils/format'
 import toast from 'react-hot-toast'
+import { useNavigate } from 'react-router-dom'
 
 const AdminProducts: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([])
@@ -11,7 +12,7 @@ const AdminProducts: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedStatus, setSelectedStatus] = useState('')
   const [isLoading, setIsLoading] = useState(true)
-  const [showCreateModal, setShowCreateModal] = useState(false)
+  const navigate = useNavigate()
 
   useEffect(() => {
     fetchProducts()
@@ -60,16 +61,6 @@ const AdminProducts: React.FC = () => {
     }
   }
 
-  const handleUpdateInventory = async (id: string, quantity: number, inStock: boolean) => {
-    try {
-      await productsApi.updateInventory(id, { quantity, inStock })
-      toast.success('Inventory updated successfully')
-      fetchProducts()
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Failed to update inventory')
-    }
-  }
-
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -87,7 +78,7 @@ const AdminProducts: React.FC = () => {
           <p className="text-gray-600 mt-1">Manage your product catalog</p>
         </div>
         <button
-          onClick={() => setShowCreateModal(true)}
+          onClick={() => navigate('/admin/products/new')}
           className="btn-primary"
         >
           <Plus className="w-4 h-4 mr-2" />
@@ -199,17 +190,9 @@ const AdminProducts: React.FC = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center space-x-2">
-                        <input
-                          type="number"
-                          value={product.inventory.quantity}
-                          onChange={(e) => handleUpdateInventory(
-                            product._id,
-                            parseInt(e.target.value),
-                            product.inventory.inStock
-                          )}
-                          className="w-16 input text-sm"
-                          min="0"
-                        />
+                        <span className="text-sm font-medium text-gray-900">
+                          {product.inventory.quantity}
+                        </span>
                         {product.inventory.quantity <= (product.inventory.minThreshold || 0) && (
                           <AlertTriangle className="w-4 h-4 text-warning-600" title="Low stock" />
                         )}
@@ -234,7 +217,8 @@ const AdminProducts: React.FC = () => {
                       <div className="flex items-center space-x-2">
                         <button
                           className="text-primary-600 hover:text-primary-900"
-                          title="Edit"
+                          aria-label="Edit"
+                          onClick={() => navigate(`/admin/products/${product._id}/edit`)}
                         >
                           <Edit className="w-4 h-4" />
                         </button>

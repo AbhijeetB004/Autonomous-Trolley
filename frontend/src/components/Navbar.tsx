@@ -32,7 +32,7 @@ const Navbar: React.FC<NavbarProps> = ({ toggleSidebar, isSidebarOpen }) => {
             <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
               <ShoppingCart className="w-5 h-5 text-white" />
             </div>
-            <span className="self-center text-2xl font-semibold whitespace-nowrap text-blue-700 dark:text-white hidden sm:block">Smart Trolley Store</span>
+            <span className="self-center text-2xl font-semibold whitespace-nowrap text-gray-900 hidden sm:block">Smart Trolley Store</span>
           </Link>
 
           {/* Right side */}

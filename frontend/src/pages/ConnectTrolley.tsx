@@ -5,6 +5,7 @@ import toast from 'react-hot-toast'
 import { useCartStore } from '../stores/cartStore' // Assuming cartStore will manage trolleyId
 import { Html5QrcodeScanner } from 'html5-qrcode'
 import { trolleysApi } from '../services/api'
+import { useAuthStore } from '../stores/authStore' // Import useAuthStore
 
 const ConnectTrolley: React.FC = () => {
   const navigate = useNavigate()
@@ -12,8 +13,15 @@ const ConnectTrolley: React.FC = () => {
   const [trolleyInput, setTrolleyInput] = useState('')
   const [scanning, setScanning] = useState(false) // New state to control scanner visibility
   const [trolleyAvailability, setTrolleyAvailability] = useState<{ id: string; available: boolean } | null>(null)
+  const { user } = useAuthStore() // Get user from auth store
 
   useEffect(() => {
+    if (user?.role === 'admin') {
+      toast.error("Admin users cannot connect to trolleys.")
+      navigate('/') // Redirect to dashboard or another appropriate page
+      return
+    }
+
     // Check trolley availability when trolleyInput changes and no trolley is connected
     const checkAvailability = async (id: string) => {
       if (!id) {
@@ -38,7 +46,7 @@ const ConnectTrolley: React.FC = () => {
     } else {
       setTrolleyAvailability(null);
     }
-  }, [trolleyInput, connectedTrolleyId]);
+  }, [trolleyInput, connectedTrolleyId, user, navigate]); // Add user and navigate to dependencies
 
   useEffect(() => {
     let html5QrcodeScanner: Html5QrcodeScanner | null = null;

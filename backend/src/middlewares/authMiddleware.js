@@ -20,4 +20,11 @@ exports.requireAdmin = (req, res, next) => {
     return res.status(403).json({ message: 'Admin access required.' });
   }
   next();
+};
+
+exports.requireCustomer = (req, res, next) => {
+  if (req.user.role === 'admin') {
+    return res.status(403).json({ message: 'Customer access required. Admin users cannot perform this action.' });
+  }
+  next();
 }; 

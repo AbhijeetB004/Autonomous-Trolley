@@ -4,6 +4,7 @@ import { trolleysApi } from '../../services/api'
 import { Trolley } from '../../types'
 import { formatDate, getStatusColor } from '../../utils/format'
 import toast from 'react-hot-toast'
+import { useNavigate } from 'react-router-dom'
 
 const AdminTrolleys: React.FC = () => {
   const [trolleys, setTrolleys] = useState<Trolley[]>([])
@@ -11,6 +12,7 @@ const AdminTrolleys: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedStatus, setSelectedStatus] = useState('')
   const [isLoading, setIsLoading] = useState(true)
+  const navigate = useNavigate()
 
   useEffect(() => {
     fetchTrolleys()
@@ -80,7 +82,7 @@ const AdminTrolleys: React.FC = () => {
         </div>
         <button className="btn-primary">
           <Plus className="w-4 h-4 mr-2" />
-          Add Trolley
+          <span onClick={() => navigate('/admin/trolleys/new')}>Add Trolley</span>
         </button>
       </div>
 
@@ -141,23 +143,16 @@ const AdminTrolleys: React.FC = () => {
                     <p className="text-sm text-gray-600">ID: {trolley.trolleyId}</p>
                   </div>
                 </div>
-                <button className="text-gray-400 hover:text-gray-600">
+                <button className="text-gray-400 hover:text-gray-600" onClick={() => navigate(`/admin/trolleys/${trolley._id}/edit`)}>
                   <Edit className="w-4 h-4" />
                 </button>
               </div>
 
               {/* Status */}
               <div className="mb-4">
-                <select
-                  value={trolley.status.operational}
-                  onChange={(e) => handleStatusUpdate(trolley._id, e.target.value)}
-                  className={`badge badge-${getStatusColor(trolley.status.operational)} border-0 text-xs`}
-                >
-                  <option value="active">Active</option>
-                  <option value="maintenance">Maintenance</option>
-                  <option value="offline">Offline</option>
-                  <option value="error">Error</option>
-                </select>
+                <span className={`badge badge-${getStatusColor(trolley.status.operational)}`}>
+                  {trolley.status.operational}
+                </span>
               </div>
 
               {/* Battery */}
@@ -238,20 +233,20 @@ const AdminTrolleys: React.FC = () => {
                 <div className="grid grid-cols-3 gap-2 text-xs">
                   <div className="text-center">
                     <p className="text-gray-500">LIDAR</p>
-                    <span className={`badge ${trolley.status.sensors.lidarStatus === 'online' ? 'badge-success' : 'badge-error'}`}>
-                      {trolley.status.sensors.lidarStatus}
+                    <span className={`badge ${trolley.status.sensors?.lidarStatus === 'online' ? 'badge-success' : 'badge-error'}`}>
+                      {trolley.status.sensors?.lidarStatus || 'N/A'}
                     </span>
                   </div>
                   <div className="text-center">
                     <p className="text-gray-500">Camera</p>
-                    <span className={`badge ${trolley.status.sensors.cameraStatus === 'online' ? 'badge-success' : 'badge-error'}`}>
-                      {trolley.status.sensors.cameraStatus}
+                    <span className={`badge ${trolley.status.sensors?.cameraStatus === 'online' ? 'badge-success' : 'badge-error'}`}>
+                      {trolley.status.sensors?.cameraStatus || 'N/A'}
                     </span>
                   </div>
                   <div className="text-center">
                     <p className="text-gray-500">Motors</p>
-                    <span className={`badge ${trolley.status.sensors.motorsStatus === 'online' ? 'badge-success' : 'badge-error'}`}>
-                      {trolley.status.sensors.motorsStatus}
+                    <span className={`badge ${trolley.status.sensors?.motorsStatus === 'online' ? 'badge-success' : 'badge-error'}`}>
+                      {trolley.status.sensors?.motorsStatus || 'N/A'}
                     </span>
                   </div>
                 </div>

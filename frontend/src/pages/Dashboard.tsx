@@ -23,7 +23,8 @@ const Dashboard: React.FC = () => {
     const fetchDashboardData = async () => {
       try {
         const [ordersResponse, productsResponse] = await Promise.all([
-          ordersApi.getUserOrders(),
+          // Only fetch user orders if not admin
+          user?.role !== 'admin' ? ordersApi.getUserOrders() : Promise.resolve({ data: [] }),
           productsApi.getAll(),
         ])
 
@@ -46,8 +47,10 @@ const Dashboard: React.FC = () => {
       }
     }
 
-    fetchDashboardData()
-  }, [])
+    if (user) { // Only fetch if user is authenticated
+      fetchDashboardData()
+    }
+  }, [user?.userId, user?.role]) // Re-run effect if user ID or role changes
 
   if (isLoading) {
     return (
@@ -70,28 +73,30 @@ const Dashboard: React.FC = () => {
       </div>
 
       {/* Trolley Connection Status */}
-      <div className="card p-4 sm:p-6 flex items-center justify-between">
-        {connectedTrolleyId ? (
-          <div className="flex items-center space-x-2 text-primary-600">
-            <Wifi className="w-5 h-5" />
-            <p className="font-semibold">Connected to Trolley: <span className="font-bold">{connectedTrolleyId}</span></p>
-          </div>
-        ) : (
-          <div className="flex items-center space-x-2 text-gray-600">
-            <Wifi className="w-5 h-5" />
-            <p>Not connected to any trolley.</p>
-          </div>
-        )}
-        {connectedTrolleyId ? (
-          <button onClick={clearTrolleyId} className="btn-secondary text-error-600 hover:text-error-700">
-            Disconnect
-          </button>
-        ) : (
-          <Link to="/connect-trolley" className="btn-primary">
-            Connect to Trolley
-          </Link>
-        )}
-      </div>
+      {user?.role !== 'admin' && (
+        <div className="card p-4 sm:p-6 flex items-center justify-between">
+          {connectedTrolleyId ? (
+            <div className="flex items-center space-x-2 text-primary-600">
+              <Wifi className="w-5 h-5" />
+              <p className="font-semibold">Connected to Trolley: <span className="font-bold">{connectedTrolleyId}</span></p>
+            </div>
+          ) : (
+            <div className="flex items-center space-x-2 text-gray-600">
+              <Wifi className="w-5 h-5" />
+              <p>Not connected to any trolley.</p>
+            </div>
+          )}
+          {connectedTrolleyId ? (
+            <button onClick={clearTrolleyId} className="btn-secondary text-error-600 hover:text-error-700">
+              Disconnect
+            </button>
+          ) : (
+            <Link to="/connect-trolley" className="btn-primary">
+              Connect to Trolley
+            </Link>
+          )}
+        </div>
+      )}
 
       {/* Stats Cards - Only for admin */}
       {user?.role === 'admin' && (
@@ -136,51 +141,53 @@ const Dashboard: React.FC = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Orders */}
-        <div className="card">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-gray-900">Recent Orders</h2>
-            <Link
-              to="/orders"
-              className="text-sm text-primary-600 hover:text-primary-700 font-medium"
-            >
-              View all
-            </Link>
-          </div>
-
-          {recentOrders.length === 0 ? (
-            <div className="text-center py-8">
-              <ShoppingBag className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-              <p className="text-gray-500">No orders yet</p>
-              <Link to="/products" className="btn-primary mt-3">
-                Start Shopping
+        {user?.role !== 'admin' && (
+          <div className="card">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold text-gray-900">Recent Orders</h2>
+              <Link
+                to="/orders"
+                className="text-sm text-primary-600 hover:text-primary-700 font-medium"
+              >
+                View all
               </Link>
             </div>
-          ) : (
-            <div className="space-y-3">
-              {recentOrders.map((order) => (
-                <div
-                  key={order._id}
-                  className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
-                >
-                  <div>
-                    <p className="font-medium text-gray-900">#{order.orderId}</p>
-                    <p className="text-sm text-gray-500">
-                      {order.items.length} items • {formatRelativeTime(order.timeline.orderedAt || '')}
-                    </p>
+
+            {recentOrders.length === 0 ? (
+              <div className="text-center py-8">
+                <ShoppingBag className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                <p className="text-gray-500">No orders yet</p>
+                <Link to="/products" className="btn-primary mt-3">
+                  Start Shopping
+                </Link>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {recentOrders.map((order) => (
+                  <div
+                    key={order._id}
+                    className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                  >
+                    <div>
+                      <p className="font-medium text-gray-900">#{order.orderId}</p>
+                      <p className="text-sm text-gray-500">
+                        {order.items.length} items • {formatRelativeTime(order.timeline.orderedAt || '')}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-medium text-gray-900">
+                        {formatCurrency(order.pricing.total)}
+                      </p>
+                      <span className={`badge badge-${getStatusColor(order.status)}`}>
+                        {order.status.replace('_', ' ')}
+                      </span>
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <p className="font-medium text-gray-900">
-                      {formatCurrency(order.pricing.total)}
-                    </p>
-                    <span className={`badge badge-${getStatusColor(order.status)}`}>
-                      {order.status.replace('_', ' ')}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Featured Products */}
         <div className="card">

@@ -1,18 +1,20 @@
 const express = require('express');
 const router = express.Router();
 const trolleyController = require('../controllers/trolleyController');
-const { authenticate, requireAdmin } = require('../middlewares/authMiddleware');
+const { authenticate, requireAdmin, requireCustomer } = require('../middlewares/authMiddleware');
 
 // Admin: Get all trolleys
 router.get('/', authenticate, requireAdmin, trolleyController.getTrolleys);
-// Admin: Get trolley by id
+// Admin/Customer: Get trolley by id (Customer can read specific trolley by ID)
 router.get('/:id', authenticate, trolleyController.getTrolleyById);
-// User: Connect to a trolley
-router.post('/connect', authenticate, trolleyController.connectTrolley);
-// User: Disconnect from a trolley
-router.post('/disconnect', authenticate, trolleyController.disconnectTrolley);
-// User: Check trolley availability
+
+// Customer: Connect to a trolley
+router.post('/connect', authenticate, requireCustomer, trolleyController.connectTrolley);
+// Customer: Disconnect from a trolley
+router.post('/disconnect', authenticate, requireCustomer, trolleyController.disconnectTrolley);
+// Customer: Check trolley availability
 router.get('/availability/:trolleyId', authenticate, trolleyController.checkTrolleyAvailability);
+
 // Admin: Update trolley status
 router.put('/:id/status', authenticate, requireAdmin, trolleyController.updateTrolleyStatus);
 // Admin: Update trolley (mock location/battery/task)
