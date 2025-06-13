@@ -194,7 +194,7 @@ const AdminProducts: React.FC = () => {
                           {product.inventory.quantity}
                         </span>
                         {product.inventory.quantity <= (product.inventory.minThreshold || 0) && (
-                          <AlertTriangle className="w-4 h-4 text-warning-600" title="Low stock" />
+                          <AlertTriangle className="w-4 h-4 text-warning-600" />
                         )}
                       </div>
                       <div className="text-xs text-gray-500 mt-1">

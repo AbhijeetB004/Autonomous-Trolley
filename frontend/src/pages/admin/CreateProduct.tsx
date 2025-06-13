@@ -15,7 +15,7 @@ const CreateProduct: React.FC = () => {
     images: [],
     price: {
       amount: 0,
-      currency: 'USD',
+      currency: 'INR',
       onSale: false,
       discountPrice: 0,
     },
@@ -150,7 +150,7 @@ const CreateProduct: React.FC = () => {
         <h2 className="text-xl font-semibold text-gray-900 pt-4 border-t border-gray-200">Pricing</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label htmlFor="price.amount" className="label">Price (USD)</label>
+            <label htmlFor="price.amount" className="label">Price (INR)</label>
             <input type="number" id="price.amount" name="price.amount" value={product.price?.amount || 0} onChange={handleChange} className="input" step="0.01" required min="0" />
           </div>
           <div>
@@ -159,7 +159,7 @@ const CreateProduct: React.FC = () => {
           </div>
           {product.price?.onSale && (
             <div>
-              <label htmlFor="price.discountPrice" className="label">Discount Price (USD)</label>
+              <label htmlFor="price.discountPrice" className="label">Discount Price (INR)</label>
               <input type="number" id="price.discountPrice" name="price.discountPrice" value={product.price?.discountPrice || ''} onChange={handleChange} className="input" step="0.01" min="0" />
             </div>
           )}
