@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Package, ShoppingBag, Truck, Users, TrendingUp, AlertTriangle } from 'lucide-react'
+import { Package, ShoppingBag, Truck, TrendingUp, AlertTriangle } from 'lucide-react'
 import { ordersApi, productsApi, trolleysApi } from '../../services/api'
 import { Order, Product, Trolley } from '../../types'
 import { formatCurrency, getStatusColor } from '../../utils/format'

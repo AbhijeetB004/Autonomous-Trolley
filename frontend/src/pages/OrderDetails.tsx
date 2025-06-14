@@ -112,7 +112,7 @@ const OrderDetails: React.FC = () => {
             <div className="relative max-w-full overflow-hidden">
               <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-gray-200"></div>
               <div className="space-y-6 w-full max-w-full">
-                {statusSteps.map((step, index) => (
+                {statusSteps.map((step, /*index*/) => (
                   <div key={step.key} className="relative flex items-start min-w-0 w-full max-w-full">
                     <div
                       className={`relative z-10 w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${

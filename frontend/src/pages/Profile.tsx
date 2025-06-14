@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { User, Mail, Calendar, Award, ShoppingBag, Settings } from 'lucide-react'
-import { useAuthStore } from '../stores/authStore'
+// import { useAuthStore } from '../stores/authStore'
 import { authApi, ordersApi } from '../services/api'
 import { Order } from '../types'
 import { formatCurrency, formatDate } from '../utils/format'
@@ -8,7 +8,7 @@ import toast from 'react-hot-toast'
 import { Link } from 'react-router-dom'
 
 const Profile: React.FC = () => {
-  const { user } = useAuthStore()
+  // const { user } = useAuthStore()
   const [profile, setProfile] = useState<any>(null)
   const [recentOrders, setRecentOrders] = useState<Order[]>([])
   const [isLoading, setIsLoading] = useState(true)

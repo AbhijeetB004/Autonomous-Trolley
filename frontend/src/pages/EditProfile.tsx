@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../stores/authStore'
 import { authApi } from '../services/api'
 import toast from 'react-hot-toast'
-import { User as UserType } from '../types' // Renamed to avoid conflict with local User component
+// import { User as UserType } from '../types' // Renamed to avoid conflict with local User component
 
 const EditProfile: React.FC = () => {
   const navigate = useNavigate()

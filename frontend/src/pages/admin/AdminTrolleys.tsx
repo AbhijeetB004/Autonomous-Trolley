@@ -48,15 +48,7 @@ const AdminTrolleys: React.FC = () => {
     }
   }
 
-  const handleStatusUpdate = async (id: string, operational: string) => {
-    try {
-      await trolleysApi.updateStatus(id, { operational })
-      toast.success('Trolley status updated successfully')
-      fetchTrolleys()
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Failed to update trolley status')
-    }
-  }
+  
 
   const getBatteryColor = (level: number) => {
     if (level > 60) return 'text-success-600'
