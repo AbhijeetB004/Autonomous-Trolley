@@ -6,7 +6,7 @@ import {
   ShoppingBag,
   ShoppingCart,
   User,
-  Settings,
+  // Settings,
   BarChart3,
   Truck,
   Tags,

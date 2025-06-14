@@ -9,7 +9,7 @@ interface NavbarProps {
   isSidebarOpen: boolean;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ toggleSidebar, isSidebarOpen }) => {
+const Navbar: React.FC<NavbarProps> = ({ toggleSidebar, /*isSidebarOpen*/ }) => {
   const { user, logout } = useAuthStore()
   const { getTotalItems } = useCartStore()
   const cartItemsCount = getTotalItems()

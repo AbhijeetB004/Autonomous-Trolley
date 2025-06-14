@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Eye, Search, Filter, Truck, Package } from 'lucide-react'
+import { Eye, Search, Truck, Package } from 'lucide-react'
 import { ordersApi, trolleysApi } from '../../services/api'
 import { Order, Trolley } from '../../types'
 import { formatCurrency, formatDate, getStatusColor } from '../../utils/format'
